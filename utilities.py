@@ -27,6 +27,15 @@ def blit_text(surface, text, x, y, displaywidth=None, displayheight=None, font='
     surface.blit(text_surface, (x, y))
 
 
+def text_button(surface, text, x, y, font='Arial', font_size=24, color=(255, 255, 255)):
+    """ Blits a text button to the screen """
+    button_font = pygame.font.SysFont(font, font_size)
+    text_surface = button_font.render(text, True, color)
+    button_rect = text_surface.get_rect(center=(x, y))
+
+    surface.blit(text_surface, button_rect)
+
+
 def animate(path, name, frames):
 
     animation_database = []
@@ -35,7 +44,7 @@ def animate(path, name, frames):
     for i in range(frames):
         image_id = name + str(n)
         image_path = path + image_id + '.png'
-        image = pygame.image.load(image_path)  # .convert()
+        image = pygame.image.load(image_path).convert_alpha()
         image.set_colorkey((255, 255, 255))
         animation_database.append(image)
 

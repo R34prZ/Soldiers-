@@ -2,7 +2,7 @@
 
 import pygame
 from random import randrange
-from utilities import animate
+from utilities import animate, WHITE
 
 
 class Shoot:
@@ -24,7 +24,7 @@ class Shoot:
             self.bullet_rect.y += self.bullet_speed
 
 
-class Player(Shoot):
+class Player:
     def __init__(self, x, y, length: tuple):
 
         # position and basic stuff
@@ -72,6 +72,18 @@ class Player(Shoot):
         self.state = 'idle'
 
     def move(self):
+
+        self.keyboard = pygame.key.get_pressed()
+        if self.keyboard[pygame.K_a] or self.keyboard[pygame.K_LEFT]:
+            self.movements['left'] = True
+        if self.keyboard[pygame.K_d] or self.keyboard[pygame.K_RIGHT]:
+            self.movements['right'] = True
+        if self.keyboard[pygame.K_SPACE]:
+            if self.ammo > 0:
+                self.movements['shooting'] = True
+
+        print(self.movements)
+
         if self.movements['left']:
             self.x -= self.player_vel
             self.state = 'left'
@@ -85,6 +97,13 @@ class Player(Shoot):
         else:
             self.state = 'idle'
 
+    def reset_keys(self):
+        self.movements = {
+            'left': False,
+            'right': False,
+            'shooting': False
+        }
+
     def create_bullet(self):
         self.ammo -= 1
         return Shoot(self.x + 8, self.y, self.length, 6, 15, 25)
@@ -92,18 +111,14 @@ class Player(Shoot):
     def update(self, display, width):
 
         # player life bar
-        # life_barbg = pygame.Rect(
-        #     self.player_rect.centerx - 25, self.player_rect.bottom + 20, 10 * 5, 10)
-        # life_barstat = pygame.Rect(
-        #     self.player_rect.centerx - 25, self.player_rect.bottom + 20, self.lives * 5, 10)
-        # pygame.draw.rect(display, (255, 0, 0), life_barbg)
-        # pygame.draw.rect(display, (0, 255, 0), life_barstat)
+        lifebar_bg = pygame.Surface((64, 5))
+        lifebar = pygame.Rect(self.x, self.y + 80, 64, 5)
 
-        display.blit(self.life_bar_frame, (self.x, self.y + self.length[0]))
-        display.blit(pygame.transform.scale(self.life_bar_full, (
-            0 + round(self.lives * 6.4), 32)), (self.x, self.y + self.length[0]))
+        display.blit(lifebar_bg, lifebar)
+        pygame.draw.rect(display, WHITE, lifebar)
 
         # shot related
+        self.move()
 
         if self.score % 10 == 0 and self.score > 0:  # makes the player earn 10 ammo and 1 score point every 10 score
             self.ammo += 10
@@ -142,10 +157,10 @@ class Player(Shoot):
         elif self.x <= 0:
             self.x = 0
 
-        self.move()
+        self.reset_keys()
 
 
-class Enemy(Shoot):
+class Enemy:
     def __init__(self, x, y):
 
         # position and basic stuff
@@ -233,7 +248,7 @@ class Packs:
         return pack_list
 
 
-class Medipack(Packs):
+class Medipack:
     def __init__(self, x, y, width, height):
 
         self.x = x
@@ -272,7 +287,7 @@ class Medipack(Packs):
             actual_animation, (64, 64)), (self.x, self.y))
 
 
-class Ammobag(Packs):
+class Ammobag:
     def __init__(self, x, y, width, height):
 
         self.x = x
