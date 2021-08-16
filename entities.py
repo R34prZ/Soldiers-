@@ -2,7 +2,7 @@
 
 import pygame
 from random import randrange
-from utilities import animate, WHITE
+from utilities import animate, WHITE, BLACK
 
 
 class Shoot:
@@ -112,8 +112,10 @@ class Player:
 
         # player life bar
         lifebar_bg = pygame.Surface((64, 5))
-        lifebar = pygame.Rect(self.x, self.y + 80, 64, 5)
+        lifebar_bg.set_alpha(80)
+        lifebar = pygame.Rect(self.x, self.y + 80, self.lives * 6.4, 5)
 
+        lifebar_bg.fill(BLACK)
         display.blit(lifebar_bg, lifebar)
         pygame.draw.rect(display, WHITE, lifebar)
 
