@@ -37,6 +37,7 @@ def text_button(surface, text, x, y, font='Arial', font_size=24, color=(255, 255
 
 
 def animate(path, name, frames):
+    '''Loads sprites for animation. Must be stores on a Animation Dictionary to be loaded based on state.'''
 
     animation_database = []
 

@@ -14,7 +14,7 @@ pygame.init()
 class Main:
 
     NAME = 'Allied vs Axis'
-    VERSION = '0.5'
+    VERSION = '0.5.2'
 
     def __init__(self, width, height):
 
@@ -41,12 +41,16 @@ class Main:
             'return_key': False
         }
 
-        # other
+        # game windows (based on states)
         self.main_menu = menu.MainMenu(self)
+        self.options_menu = menu.OptionsMenu(self)
         self.main_game = game.Game(self)
 
+        # game states
+        self.game_running = True
         self.on_menu = True
-        self.game_running = False
+        self.on_optionsmenu = False
+        self.playing = False
 
     def check_event(self):
         for event in pygame.event.get():
@@ -73,24 +77,29 @@ class Main:
 
     def update(self):
 
-        self.display.fill(BLACK)
+        while self.game_running:
 
-        self.check_event()
+            self.display.fill(BLACK)
 
-        if self.on_menu:
-            self.main_menu.update()
-        elif self.game_running:
-            self.main_game.update()
+            self.check_event()
 
-        self.reset_keys()
+            if self.on_menu:
+                self.main_menu.update()
+            elif self.on_optionsmenu:
+                self.options_menu.update()
+            elif self.playing:
+                self.main_game.update()
 
-        self.screen.blit(self.display, (0, 0))
-        self.clock.tick(self.FPS)
-        pygame.display.flip()
+            self.reset_keys()
+
+            self.screen.blit(self.display, (0, 0))
+            self.clock.tick(self.FPS)
+            pygame.display.flip()
 
 
 if __name__ == '__main__':
-    game = Main(400, 600)
 
-    while True:
-        game.update()
+    # define main object
+    game = Main(400, 600)
+    # update the entire game
+    game.update()

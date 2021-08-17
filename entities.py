@@ -82,8 +82,6 @@ class Player:
             if self.ammo > 0:
                 self.movements['shooting'] = True
 
-        print(self.movements)
-
         if self.movements['left']:
             self.x -= self.player_vel
             self.state = 'left'
