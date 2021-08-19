@@ -9,11 +9,11 @@ class Menu:
         self.midscreenX, self.midscreenY = self.main.width // 2, self.main.height // 2
 
         self.cursor_rect = pygame.Rect(0, 0, 20, 20)
-        self.offset = -50
+        self.offset = -100
 
     def draw_cursor(self):
         utilities.blit_text(self.main.display, '*',
-                            self.cursor_rect.x, self.cursor_rect.y, font_size=32)
+                            self.cursor_rect.x, self.cursor_rect.y)
 
 
 class MainMenu(Menu):
@@ -24,7 +24,8 @@ class MainMenu(Menu):
 
         self.startx, self.starty = self.midscreenX, self.midscreenY
         self.optionsx, self.optionsy = self.midscreenX, self.midscreenY + 30
-        self.exitx, self.exity = self.midscreenX, self.midscreenY + 60
+        self.controlsx, self.controlsy = self.midscreenX, self.midscreenY + 60
+        self.exitx, self.exity = self.midscreenX, self.midscreenY + 90
 
         self.cursor_rect.center = (self.startx + self.offset, self.starty)
 
@@ -34,6 +35,9 @@ class MainMenu(Menu):
 
         utilities.text_button(self.main.display, 'Options',
                               self.optionsx, self.optionsy)
+
+        utilities.text_button(self.main.display, 'Controls',
+                              self.controlsx, self.controlsy)
 
         utilities.text_button(self.main.display, 'Exit',
                               self.exitx, self.exity)
@@ -45,6 +49,10 @@ class MainMenu(Menu):
                     self.optionsx + self.offset, self.optionsy)
                 self.state = 'Options'
             elif self.state == 'Options':
+                self.cursor_rect.center = (
+                    self.controlsx + self.offset, self.controlsy)
+                self.state = 'Controls'
+            elif self.state == 'Controls':
                 self.cursor_rect.center = (
                     self.exitx + self.offset, self.exity)
                 self.state = 'Exit'
@@ -62,10 +70,14 @@ class MainMenu(Menu):
                 self.cursor_rect.center = (
                     self.startx + self.offset, self.starty)
                 self.state = 'Start'
-            elif self.state == 'Exit':
+            elif self.state == 'Controls':
                 self.cursor_rect.center = (
                     self.optionsx + self.offset, self.optionsy)
                 self.state = 'Options'
+            elif self.state == 'Exit':
+                self.cursor_rect.center = (
+                    self.controlsx + self.offset, self.controlsy)
+                self.state = 'Controls'
 
         elif self.main.keys['enter_key']:
             if self.state == 'Start':
@@ -73,6 +85,9 @@ class MainMenu(Menu):
                 self.main.playing = True
             elif self.state == 'Options':
                 self.main.on_optionsmenu = True
+                self.main.on_menu = False
+            elif self.state == 'Controls':
+                self.main.on_controlsmenu = True
                 self.main.on_menu = False
             elif self.state == 'Exit':
                 self.main.game_running = False
@@ -113,5 +128,67 @@ class OptionsMenu(Menu):
 
     def update(self):
         self.buttons()
+        self.draw_cursor()
+        self.move_cursor()
+
+
+class ControlsMenu(Menu):
+    def __init__(self, main):
+        super().__init__(main)
+
+        self.state = 'Back'
+
+        self.backx, self.backy = self.midscreenX, self.midscreenY + 60
+
+        self.cursor_rect.center = (self.backx + self.offset, self.backy)
+
+        # images
+        self.main_keys_frame = pygame.image.load(
+            './img/menus/main_keys_frame.png').convert()
+        self.main_keys_frame.set_colorkey(utilities.BLACK)
+        self.main_keys_frame_rect = self.main_keys_frame.get_rect()
+
+        self.secondary_keys_frame = pygame.image.load(
+            './img/menus/secondary_keys_frame.png').convert()
+        self.secondary_keys_frame.set_colorkey(utilities.BLACK)
+        self.secondary_keys_frame_rect = self.secondary_keys_frame.get_rect()
+
+        self.spacebar_key_frame = pygame.image.load(
+            './img/menus/key_frame_spacebar.png').convert()
+        self.spacebar_key_frame.set_colorkey(utilities.BLACK)
+        self.spacebar_key_frame_rect = self.spacebar_key_frame.get_rect()
+
+    def buttons(self):
+        utilities.text_button(self.main.display, 'Back',
+                              self.backx, self.backy)
+
+    def drawmenu(self):
+        self.main.display.blit(self.main_keys_frame,
+                               ((self.midscreenX - self.main_keys_frame_rect.width // 2) - 32, self.midscreenY - 40))
+
+        self.main.display.blit(self.secondary_keys_frame,
+                               ((self.midscreenX - self.secondary_keys_frame_rect.width // 2) + 32, self.midscreenY - 40))
+
+        self.main.display.blit(self.spacebar_key_frame,
+                               (self.midscreenX - self.spacebar_key_frame_rect.width // 2, self.midscreenY - 40))
+
+        utilities.blit_text(self.main.display, 'Move and Shoot:', 0,
+                            self.midscreenY - 65, self.main.width, center_x=1)
+
+    def move_cursor(self):
+        if self.main.keys['down_key']:
+            if self.state == 'Back':
+                pass
+        elif self.main.keys['up_key']:
+            if self.state == 'Back':
+                pass
+        elif self.main.keys['enter_key']:
+            if self.state == 'Back':
+                self.main.on_menu = True
+                self.main.on_controlsmenu = False
+
+    def update(self):
+        self.buttons()
+        self.drawmenu()
         self.draw_cursor()
         self.move_cursor()

@@ -1,6 +1,7 @@
 # Utilities module, supposed to contain functions, variables, and other things that can come handy
 
 import pygame
+import json
 
 # Colors
 WHITE = (255, 255, 255)
@@ -15,10 +16,16 @@ GRAY = (128, 128, 128)
 PURPLE = (128, 0, 128)
 
 
-def blit_text(surface, text, x, y, displaywidth=None, displayheight=None, font='Arial', font_size=24, color=(255, 255, 255), center_x=False, center_y=False) -> None:
+def blit_text(surface, text, x, y, displaywidth=None, displayheight=None, font='./font/Early GameBoy.ttf', font_size=16, color=(255, 255, 255), center_x=False, center_y=False) -> None:
     """ Automatically blit text on the screen. """
-    screen_font = pygame.font.SysFont(font, font_size)
+
+    try:
+        screen_font = pygame.font.Font(font, font_size)
+    except:
+        screen_font = pygame.font.SysFont('Arial', font_size)
+
     text_surface = screen_font.render(text, True, color)
+
     if center_x:
         x = (displaywidth // 2 - text_surface.get_width()/2)
     if center_y:
@@ -27,9 +34,13 @@ def blit_text(surface, text, x, y, displaywidth=None, displayheight=None, font='
     surface.blit(text_surface, (x, y))
 
 
-def text_button(surface, text, x, y, font='Arial', font_size=24, color=(255, 255, 255)):
+def text_button(surface, text, x, y, font='./font/Early GameBoy.ttf', font_size=16, color=(255, 255, 255)):
     """ Blits a text button to the screen """
-    button_font = pygame.font.SysFont(font, font_size)
+    try:
+        button_font = pygame.font.Font(font, font_size)
+    except:
+        button_font = pygame.font.SysFont('Arial', font_size)
+
     text_surface = button_font.render(text, True, color)
     button_rect = text_surface.get_rect(center=(x, y))
 
@@ -52,3 +63,15 @@ def animate(path, name, frames):
         n += 1
 
     return animation_database
+
+
+def save_game(save_file, data):
+    with open(save_file, 'w') as save:
+        json.dump(data, save)
+
+
+def load_game(save_file):
+    with open(save_file, 'r') as save:
+        data = json.load(save)
+
+    return data

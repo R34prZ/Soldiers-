@@ -14,7 +14,7 @@ pygame.init()
 class Main:
 
     NAME = 'Allied vs Axis'
-    VERSION = '0.5.2'
+    VERSION = '0.5.5'
 
     def __init__(self, width, height):
 
@@ -44,12 +44,14 @@ class Main:
         # game windows (based on states)
         self.main_menu = menu.MainMenu(self)
         self.options_menu = menu.OptionsMenu(self)
+        self.controls_menu = menu.ControlsMenu(self)
         self.main_game = game.Game(self)
 
         # game states
         self.game_running = True
         self.on_menu = True
         self.on_optionsmenu = False
+        self.on_controlsmenu = False
         self.playing = False
 
     def check_event(self):
@@ -87,6 +89,8 @@ class Main:
                 self.main_menu.update()
             elif self.on_optionsmenu:
                 self.options_menu.update()
+            elif self.on_controlsmenu:
+                self.controls_menu.update()
             elif self.playing:
                 self.main_game.update()
 
