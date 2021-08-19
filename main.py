@@ -94,6 +94,10 @@ class Main:
             elif self.playing:
                 self.main_game.update()
 
+                self.on_menu = False
+                self.on_optionsmenu = False
+                self.on_controlsmenu = False
+
             self.reset_keys()
 
             self.screen.blit(self.display, (0, 0))

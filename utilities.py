@@ -19,11 +19,7 @@ PURPLE = (128, 0, 128)
 def blit_text(surface, text, x, y, displaywidth=None, displayheight=None, font='./font/Early GameBoy.ttf', font_size=16, color=(255, 255, 255), center_x=False, center_y=False) -> None:
     """ Automatically blit text on the screen. """
 
-    try:
-        screen_font = pygame.font.Font(font, font_size)
-    except:
-        screen_font = pygame.font.SysFont('Arial', font_size)
-
+    screen_font = pygame.font.Font(font, font_size)
     text_surface = screen_font.render(text, True, color)
 
     if center_x:
@@ -36,11 +32,8 @@ def blit_text(surface, text, x, y, displaywidth=None, displayheight=None, font='
 
 def text_button(surface, text, x, y, font='./font/Early GameBoy.ttf', font_size=16, color=(255, 255, 255)):
     """ Blits a text button to the screen """
-    try:
-        button_font = pygame.font.Font(font, font_size)
-    except:
-        button_font = pygame.font.SysFont('Arial', font_size)
 
+    button_font = pygame.font.Font(font, font_size)
     text_surface = button_font.render(text, True, color)
     button_rect = text_surface.get_rect(center=(x, y))
 

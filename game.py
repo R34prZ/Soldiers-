@@ -35,19 +35,19 @@ class Game:
                                (self.main.width - 45, self.main.height - 60))
 
         blit_text(self.main.display, str(self.player.score), 0, 20,
-                  self.main.width, self.main.height, font_size=48, color=(0, 0, 0), center_x=True)
+                  self.main.width, self.main.height, font_size=32, color=(0, 0, 0), center_x=True)
 
         blit_text(
             self.main.display, f'FPS: {self.main.clock.get_fps(): .2f}', 20, 20, color=(0, 0, 0), font_size=12)
 
-        blit_text(self.main.display, 'Ammo', self.main.width - 80,
-                  self.main.height - 55, color=(0, 0, 0), font_size=18)
+        blit_text(self.main.display, 'Ammo', self.main.width - 85,
+                  self.main.height - 55, color=(0, 0, 0))
 
         pygame.draw.line(self.main.display, (0, 0, 0), (self.main.width - 90,
                                                         self.main.height - 35), (self.main.width - 30, self.main.height - 35), 1)
 
         blit_text(self.main.display, str(self.player.ammo), self.main.width -
-                  75, self.main.height - 35, color=(0, 0, 0), font_size=24)
+                  75, self.main.height - 35, color=(0, 0, 0))
 
     def handle_events(self):
         '''Handle game events.'''
