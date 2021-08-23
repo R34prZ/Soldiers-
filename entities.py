@@ -52,10 +52,6 @@ class Player:
 
         self.bullet_list = []
 
-        # life bar
-        self.life_bar_frame = pygame.image.load('./img/lifebarframe.png')
-        self.life_bar_full = pygame.image.load('./img/lifebar_full.png')
-
         # animation related
         self.player_img = pygame.image.load(
             './img/animations/player/idle.png')
@@ -190,7 +186,7 @@ class Enemy:
         enemy_list = []
 
         for i in range(quantity):
-            xpos = randrange(10, screen_width, 50)
+            xpos = randrange(10, screen_width - 64, 50)
             ypos = randrange(-50, 10, 50)
 
             enemy_list.append(Enemy(xpos, ypos))
@@ -240,7 +236,7 @@ class Packs:
         pack_list = []
 
         for i in range(amount):
-            x = randrange(20, displaywidth - 20)
+            x = randrange(20, displaywidth - 64)
             y = randrange(20, displayheight - 200)
 
             pack_list.append(Type(x, y, 64, 64))

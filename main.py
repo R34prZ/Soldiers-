@@ -8,6 +8,8 @@ from utilities import *
 # Game made by R34prZ#6633
 # https://github.com/R34prZ
 
+# Font by: https://www.dafont.com/pt/early-gameboy.font
+
 pygame.init()
 
 
