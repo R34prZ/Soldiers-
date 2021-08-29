@@ -27,6 +27,24 @@ class Game:
             './img/weaponframe_assaultrifle.png')
         self.bullet_frame = pygame.image.load('./img/bulletframe.png')
 
+    def handle_events(self):
+        '''Handle game events.'''
+
+        if len(self.enemies) <= 0:
+            self.enemies = entities.Enemy.spawn_enemy(10, self.main.width)
+
+        if self.player.score % 200 == 0 and len(self.medipacks) == 0:
+            self.medipacks = entities.Packs.spawn_packs(
+                entities.Medipack, 2, self.main.width, self.main.height)
+
+        if self.player.score % 50 == 0 and len(self.ammobags) == 0:
+            self.ammobags = entities.Packs.spawn_packs(
+                entities.Ammobag, 1, self.main.width, self.main.height)
+
+        if self.player.lives == 0:
+            self.main.on_gameover = True
+            self.main.playing = False
+
     def draw(self):
         '''Render to the screen.'''
         self.main.display.blit(self.background, (0, 0))
@@ -49,27 +67,32 @@ class Game:
         blit_text(self.main.display, str(self.player.ammo), self.main.width -
                   75, self.main.height - 35, color=(0, 0, 0))
 
-    def handle_events(self):
-        '''Handle game events.'''
-        if len(self.enemies) <= 0:
-            self.enemies = entities.Enemy.spawn_enemy(10, self.main.width)
-
-        if self.player.score % 200 == 0 and len(self.medipacks) == 0:
-            self.medipacks = entities.Packs.spawn_packs(
-                entities.Medipack, 2, self.main.width, self.main.height)
-
-        if self.player.score % 50 == 0 and len(self.ammobags) == 0:
-            self.ammobags = entities.Packs.spawn_packs(
-                entities.Ammobag, 1, self.main.width, self.main.height)
-
     def update_game(self):
         '''updates the game state.'''
         self.player.update(self.main.display, self.main.width)
 
-        for medipack in self.medipacks:
+        for enemy in self.enemies:  # updates enemies and handle interactions with them
+            enemy.update(self.main.display, self.main.height)
+
+            if enemy.y >= self.main.height:
+                self.player.lives -= 1
+                self.enemies.remove(enemy)
+
+            for bullet in self.player.bullet_list:  # player shots
+                if bullet.bullet_rect.colliderect(enemy.enemyrect):
+                    self.enemies.remove(enemy)
+                    self.player.bullet_list.remove(bullet)
+                    self.player.score += 1
+
+            for bullet in enemy.bullet_list:    # enemy shots
+                if bullet.bullet_rect.colliderect(self.player.player_rect):
+                    enemy.bullet_list.remove(bullet)
+                    self.player.lives -= 1
+
+        for medipack in self.medipacks:  # updates medipacks and handle interactions with them
             medipack.update(self.main.display)
 
-            for bullet in self.player.bullet_list:
+            for bullet in self.player.bullet_list:  # player shots
                 if bullet.bullet_rect.colliderect(medipack.medipack_rect):
                     self.medipacks.remove(medipack)
                     self.player.bullet_list.remove(bullet)
@@ -77,39 +100,21 @@ class Game:
                     if self.player.lives < 10:
                         self.player.lives += 1
 
-        for ammobag in self.ammobags:
+        for ammobag in self.ammobags:   # updates ammobags and handle interactions with them
             ammobag.update(self.main.display)
 
-            for bullet in self.player.bullet_list:
+            for bullet in self.player.bullet_list:  # player shots
                 if bullet.bullet_rect.colliderect(ammobag.ammobag_rect):
                     self.ammobags.remove(ammobag)
                     self.player.bullet_list.remove(bullet)
 
                     self.player.ammo += 10
 
-        for enemy in self.enemies:
-            enemy.update(self.main.display, self.main.height)
-
-            if enemy.y >= self.main.height:
-                self.player.lives -= 1
-                self.enemies.remove(enemy)
-
-            for bullet in self.player.bullet_list:
-                if bullet.bullet_rect.colliderect(enemy.enemyrect):
-                    self.enemies.remove(enemy)
-                    self.player.bullet_list.remove(bullet)
-                    self.player.score += 1
-
-            for bullet in enemy.bullet_list:
-                if bullet.bullet_rect.colliderect(self.player.player_rect):
-                    enemy.bullet_list.remove(bullet)
-                    self.player.lives -= 1
-
     def update(self) -> None:
         ''' Main loop of the game. Handles events, updates the game and render to the main display.'''
 
-        self.draw()
-
         self.handle_events()
+
+        self.draw()
 
         self.update_game()

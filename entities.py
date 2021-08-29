@@ -104,23 +104,20 @@ class Player:
 
     def update(self, display, width):
 
-        # player life bar
-        lifebar_bg = pygame.Surface((64, 5))
-        lifebar_bg.set_alpha(80)
-        lifebar = pygame.Rect(self.x, self.y + 80, self.lives * 6.4, 5)
-
-        lifebar_bg.fill(BLACK)
-        display.blit(lifebar_bg, lifebar)
-        pygame.draw.rect(display, WHITE, lifebar)
-
-        # shot related
+        # player movement
         self.move()
 
-        if self.score % 10 == 0 and self.score > 0:  # makes the player earn 10 ammo and 1 score point every 10 score
-            self.ammo += 10
+        if self.x >= width - self.player_rect.width:
+            self.x = width - self.player_rect.width
+        elif self.x <= 0:
+            self.x = 0
+
+        # shot related
+        if self.score % 10 == 0 and self.score > 0:  # makes the player earn 5 ammo and 1 score point every 10 score
+            self.ammo += 5
             self.score += 1
 
-        if self.movements['shooting']:
+        if self.movements['shooting']:  # shoot logic
 
             self.shoot_timer += 1
 
@@ -130,12 +127,24 @@ class Player:
             if self.shoot_timer == self.shoot_delay:
                 self.bullet_list.append(self.create_bullet())
 
-        for bullet in self.bullet_list:
+        for bullet in self.bullet_list:  # render and update bullets
             pygame.draw.rect(display, (20, 50, 85), bullet.bullet_rect)
             bullet.update()
 
             if bullet.bullet_rect.y <= 0:
                 self.bullet_list.remove(bullet)
+
+        # player life bar
+        lifebar_bg = pygame.Surface((64, 5))
+        lifebar_bg.set_alpha(80)
+        lifebar = pygame.Rect(self.x, self.y + 80, self.lives * 6.4, 5)
+
+        lifebar_bg.fill(BLACK)
+        display.blit(lifebar_bg, lifebar)
+        pygame.draw.rect(display, WHITE, lifebar)
+
+        if self.lives <= 0:
+            self.lives = 0
 
         # animation related
         if self.frame >= len(self.animations[self.state]):
@@ -146,12 +155,6 @@ class Player:
             self.x, self.y, self.length[0], self.length[1])
         display.blit(pygame.transform.scale(
             actual_animation, (64, 64)), self.player_rect)
-
-        # player movement
-        if self.x >= width - self.player_rect.width:
-            self.x = width - self.player_rect.width
-        elif self.x <= 0:
-            self.x = 0
 
         self.reset_keys()
 
@@ -202,6 +205,9 @@ class Enemy:
 
     def update(self, display, height):
 
+        # enemy movement
+        self.move()
+
         # shot related
         self.shoot_timer += 1
 
@@ -211,7 +217,7 @@ class Enemy:
         if self.shoot_timer == self.shoot_delay:
             self.bullet_list.append(self.create_bullet())
 
-        for bullet in self.bullet_list:
+        for bullet in self.bullet_list:  # draws and updates bullets
             pygame.draw.rect(display, (255, 255, 0), bullet.bullet_rect)
             bullet.update(up=False, down=True)
 
@@ -226,9 +232,6 @@ class Enemy:
         self.enemyrect = pygame.Rect(self.x, self.y, 64, 64)
         display.blit(pygame.transform.flip(pygame.transform.scale(
             actual_animation, (64, 64)), False, True), self.enemyrect)
-
-        # enemy movement
-        self.move()
 
 
 class Packs:

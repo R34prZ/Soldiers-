@@ -1,9 +1,10 @@
 import pygame
 import sys
 import menu
-import game
+#import game
 from pygame.locals import *
 from utilities import *
+from game import Game
 
 # Game made by R34prZ#6633
 # https://github.com/R34prZ
@@ -16,7 +17,7 @@ pygame.init()
 class Main:
 
     NAME = 'Allied vs Axis'
-    VERSION = '0.5.5'
+    VERSION = '0.5.6'
 
     def __init__(self, width, height):
 
@@ -47,7 +48,8 @@ class Main:
         self.main_menu = menu.MainMenu(self)
         self.options_menu = menu.OptionsMenu(self)
         self.controls_menu = menu.ControlsMenu(self)
-        self.main_game = game.Game(self)
+        self.main_game = Game(self)
+        self.gameover_menu = menu.GameOverMenu(self)
 
         # game states
         self.game_running = True
@@ -55,6 +57,7 @@ class Main:
         self.on_optionsmenu = False
         self.on_controlsmenu = False
         self.playing = False
+        self.on_gameover = False
 
     def check_event(self):
         for event in pygame.event.get():
@@ -79,6 +82,10 @@ class Main:
             'return_key': False
         }
 
+    def restart_game(self):
+        ''' Restarts the game states and windows to be able to run it again after dying. '''
+        self.main_game = Game(self)
+
     def update(self):
 
         while self.game_running:
@@ -99,6 +106,8 @@ class Main:
                 self.on_menu = False
                 self.on_optionsmenu = False
                 self.on_controlsmenu = False
+            elif self.on_gameover:
+                self.gameover_menu.update()
 
             self.reset_keys()
 

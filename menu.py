@@ -29,7 +29,7 @@ class MainMenu(Menu):
 
         self.cursor_rect.center = (self.startx + self.offset, self.starty)
 
-    def buttons(self):
+    def render_buttons(self):
         utilities.text_button(self.main.display, 'Start Game',
                               self.startx, self.starty)
 
@@ -84,16 +84,16 @@ class MainMenu(Menu):
                 self.main.on_menu = False
                 self.main.playing = True
             elif self.state == 'Options':
+                self.main.on_menu = False
                 self.main.on_optionsmenu = True
-                self.main.on_menu = False
             elif self.state == 'Controls':
-                self.main.on_controlsmenu = True
                 self.main.on_menu = False
+                self.main.on_controlsmenu = True
             elif self.state == 'Exit':
                 self.main.game_running = False
 
     def update(self):
-        self.buttons()
+        self.render_buttons()
         self.draw_cursor()
         self.move_cursor()
 
@@ -108,9 +108,11 @@ class OptionsMenu(Menu):
 
         self.cursor_rect.center = (self.backx + self.offset, self.backy)
 
-    def buttons(self):
+    def render_buttons(self):
         utilities.text_button(self.main.display, 'Back',
                               self.backx, self.backy)
+
+    def draw_menu(self):
         utilities.blit_text(self.main.display, 'Yet to be implemented!',
                             0, 0, self.main.width, self.main.height, center_x=1, center_y=1)
 
@@ -127,7 +129,8 @@ class OptionsMenu(Menu):
                 self.main.on_optionsmenu = False
 
     def update(self):
-        self.buttons()
+        self.render_buttons()
+        self.draw_menu()
         self.draw_cursor()
         self.move_cursor()
 
@@ -158,11 +161,11 @@ class ControlsMenu(Menu):
         self.spacebar_key_frame.set_colorkey(utilities.BLACK)
         self.spacebar_key_frame_rect = self.spacebar_key_frame.get_rect()
 
-    def buttons(self):
+    def render_buttons(self):
         utilities.text_button(self.main.display, 'Back',
                               self.backx, self.backy)
 
-    def drawmenu(self):
+    def draw_menu(self):
         self.main.display.blit(self.main_keys_frame,
                                ((self.midscreenX - self.main_keys_frame_rect.width // 2) - 32, self.midscreenY - 40))
 
@@ -188,7 +191,81 @@ class ControlsMenu(Menu):
                 self.main.on_controlsmenu = False
 
     def update(self):
-        self.buttons()
-        self.drawmenu()
+        self.render_buttons()
+        self.draw_menu()
+        self.draw_cursor()
+        self.move_cursor()
+
+
+class GameOverMenu(Menu):
+    def __init__(self, main):
+        super().__init__(main)
+
+        self.state = 'Restart'
+
+        self.restartx, self.restarty = self.midscreenX, self.midscreenY
+        self.mainmenux, self.mainmenuy = self.midscreenX, self.midscreenY + 30
+
+        # images
+        self.dead_soldier_sprite = pygame.image.load(
+            './img/menus/deadsoldier.png').convert()
+        self.dead_soldier_sprite.set_colorkey(utilities.BLACK)
+        self.dead_soldier_sprite_rect = self.dead_soldier_sprite.get_rect()
+
+        self.cursor_rect.center = (self.restartx + self.offset, self.restarty)
+
+    def render_buttons(self):
+        utilities.text_button(self.main.display, 'Restart',
+                              self.restartx, self.restarty)
+
+        utilities.text_button(self.main.display, 'Main Menu',
+                              self.mainmenux, self.mainmenuy)
+
+    def draw_menu(self):
+        self.main.display.blit(self.dead_soldier_sprite, (self.midscreenX -
+                                                          self.dead_soldier_sprite_rect.width // 2, self.midscreenY - 180))
+
+        utilities.blit_text(
+            self.main.display, 'You died soldier.', 0, self.midscreenY - 100, self.main.width, center_x=1)
+
+        utilities.blit_text(
+            self.main.display, 'Try Again!', 0, self.midscreenY - 80, self.main.width, center_x=1)
+
+        utilities.blit_text(self.main.display,
+                            f'SCORE: {self.main.main_game.player.score}', 0, self.midscreenY + 100, self.main.width, center_x=1, font_size=18)
+
+    def move_cursor(self):
+        if self.main.keys['down_key']:
+            if self.state == 'Restart':
+                self.cursor_rect.center = (
+                    self.mainmenux + self.offset, self.mainmenuy)
+                self.state = 'Mainmenu'
+            elif self.state == 'Mainmenu':
+                self.cursor_rect.center = (
+                    self.restartx + self.offset, self.restarty)
+                self.state = 'Restart'
+        elif self.main.keys['up_key']:
+            if self.state == 'Restart':
+                self.cursor_rect.center = (
+                    self.mainmenux + self.offset, self.mainmenuy)
+                self.state = 'Mainmenu'
+            elif self.state == 'Mainmenu':
+                self.cursor_rect.center = (
+                    self.restartx + self.offset, self.restarty)
+                self.state = 'Restart'
+        elif self.main.keys['enter_key']:
+            if self.state == 'Restart':
+                self.main.on_gameover = False
+                self.main.playing = True
+                self.main.restart_game()
+            elif self.state == 'Mainmenu':
+                self.main.on_gameover = False
+                self.main.on_menu = True
+                self.main.restart_game()
+
+    def update(self):
+
+        self.render_buttons()
+        self.draw_menu()
         self.draw_cursor()
         self.move_cursor()
