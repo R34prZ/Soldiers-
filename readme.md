@@ -20,6 +20,6 @@
 - [ ] Check what improvements can be made to methods/classes;
 - [ ] Add content xD.
 
-- That's basically it, feel free to _steal_ _ i mean _ use the code, though i don't recommend it because there's probably a better way to do it.
+- That's basically it, feel free to _steal_ i mean use the code, though i don't recommend it because there's probably a better way to do it.
 
 :)
