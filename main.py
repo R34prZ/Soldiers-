@@ -83,7 +83,7 @@ class Main:
         }
 
     def restart_game(self):
-        ''' Restarts the game states and windows to be able to run it again after dying. '''
+        ''' Restarts the main game state to be able to run it again after dying. '''
         self.main_game = Game(self)
 
     def update(self):

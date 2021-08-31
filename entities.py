@@ -1,7 +1,7 @@
 # Things related to game entities
 
 import pygame
-from random import randrange
+from random import randint
 from utilities import animate, WHITE, BLACK
 
 
@@ -188,11 +188,12 @@ class Enemy:
 
         enemy_list = []
 
-        for i in range(quantity):
-            xpos = randrange(10, screen_width - 64, 50)
-            ypos = randrange(-50, 10, 50)
+        for _ in range(quantity):
+            xpos = randint(10, screen_width - 64)
+            ypos = randint(-50, 10)
 
-            enemy_list.append(Enemy(xpos, ypos))
+            if Enemy(xpos, ypos) not in enemy_list:
+                enemy_list.append(Enemy(xpos, ypos))
 
         return enemy_list
 
@@ -238,9 +239,9 @@ class Packs:
     def spawn_packs(Type, amount, displaywidth, displayheight):
         pack_list = []
 
-        for i in range(amount):
-            x = randrange(20, displaywidth - 64)
-            y = randrange(20, displayheight - 200)
+        for _ in range(amount):
+            x = randint(20, displaywidth - 64)
+            y = randint(20, displayheight - 200)
 
             pack_list.append(Type(x, y, 64, 64))
 
