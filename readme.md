@@ -14,6 +14,7 @@
 [x] OOP to make things easier;
 [x] Menus (also partially, as i need to add functionalities to some of them);
 [ ] Music and sound effects;
+[ ] New (and better) sprites;
 [ ] Particles? Maybe;
 [ ] Polish (yeah for some reason this crap is stuttering sometimes);
 [ ] Check what improvements can be made to methods/classes;
