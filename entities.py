@@ -31,7 +31,7 @@ class Player:
         self.x = x
         self.y = y
         self.length = length
-        self.player_vel = 5
+        self.player_vel = 300
         self.player_rect = pygame.Rect(
             self.x, self.y, self.length[0], self.length[1])
 
@@ -67,7 +67,7 @@ class Player:
 
         self.state = 'idle'
 
-    def move(self):
+    def move(self, dt):
 
         self.keyboard = pygame.key.get_pressed()
         if self.keyboard[pygame.K_a] or self.keyboard[pygame.K_LEFT]:
@@ -79,12 +79,12 @@ class Player:
                 self.movements['shooting'] = True
 
         if self.movements['left']:
-            self.x -= self.player_vel
+            self.x -= self.player_vel * dt
             self.state = 'left'
             self.frame += 0.1
 
         elif self.movements['right']:
-            self.x += self.player_vel
+            self.x += self.player_vel * dt
             self.state = 'right'
             self.frame += 0.2
 
@@ -102,10 +102,10 @@ class Player:
         self.ammo -= 1
         return Shoot(self.x + 8, self.y, self.length, 6, 15, 25)
 
-    def update(self, display, width):
+    def update(self, display, width, dt):
 
         # player movement
-        self.move()
+        self.move(dt)
 
         if self.x >= width - self.player_rect.width:
             self.x = width - self.player_rect.width
@@ -165,7 +165,7 @@ class Enemy:
         # position and basic stuff
         self.x = x
         self.y = y
-        self.vel = 1
+        self.vel = 50
         self.len = (64, 64)
         self.enemyrect = pygame.Rect(self.x, self.y, self.len[0], self.len[1])
 
@@ -200,14 +200,14 @@ class Enemy:
     def create_bullet(self):
         return Shoot(self.x, self.y + self.len[1], self.len, 5, 15, 25)
 
-    def move(self):
-        self.y += self.vel
+    def move(self, dt):
+        self.y += self.vel * dt
         self.frame += 0.1
 
-    def update(self, display, height):
+    def update(self, display, height, dt):
 
         # enemy movement
-        self.move()
+        self.move(dt)
 
         # shot related
         self.shoot_timer += 1

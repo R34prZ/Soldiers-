@@ -1,5 +1,6 @@
 import pygame
 import entities
+from time import time
 from utilities import *
 
 
@@ -29,6 +30,10 @@ class Game:
         self.weapon_frame = pygame.image.load(
             './img/weaponframe_assaultrifle.png')
         self.bullet_frame = pygame.image.load('./img/bulletframe.png')
+
+        # delta time
+        self.dt = 0
+        self.first_time = time()
 
     def handle_events(self):
         '''Handle game events.'''
@@ -77,45 +82,57 @@ class Game:
 
     def update_game(self):
         '''updates the game state.'''
-        self.player.update(self.main.display, self.main.width)
 
-        for medipack in self.medipacks:  # updates medipacks and handle interactions with them
+        self.second_time = time()
+        self.dt = self.second_time - self.first_time
+        self.first_time = self.second_time
+
+        self.player.update(self.main.display, self.main.width, self.dt)
+
+        # updates medipacks and handle interactions with them
+        for i, medipack in sorted(enumerate(self.medipacks), reverse=True):
             medipack.update(self.main.display)
 
-            for bullet in self.player.bullet_list:  # player shots
+            # player shots
+            for z, bullet in sorted(enumerate(self.player.bullet_list), reverse=True):
                 if bullet.bullet_rect.colliderect(medipack.medipack_rect):
-                    self.medipacks.remove(medipack)
-                    self.player.bullet_list.remove(bullet)
+                    self.medipacks.pop(i)
+                    self.player.bullet_list.pop(z)
 
                     if self.player.lives < 10:
                         self.player.lives += 1
 
-        for ammobag in self.ammobags:   # updates ammobags and handle interactions with them
+        # updates ammobags and handle interactions with them
+        for i, ammobag in sorted(enumerate(self.ammobags), reverse=True):
             ammobag.update(self.main.display)
 
-            for bullet in self.player.bullet_list:  # player shots
+            # player shots
+            for z, bullet in sorted(enumerate(self.player.bullet_list), reverse=True):
                 if bullet.bullet_rect.colliderect(ammobag.ammobag_rect):
-                    self.ammobags.remove(ammobag)
-                    self.player.bullet_list.remove(bullet)
+                    self.ammobags.pop(z)
+                    self.player.bullet_list.pop(i)
 
                     self.player.ammo += 10
 
-        for enemy in self.enemies:  # updates enemies and handle interactions with them
-            enemy.update(self.main.display, self.main.height)
+        # updates enemies and handle interactions with them
+        for i, enemy in sorted(enumerate(self.enemies), reverse=True):
+            enemy.update(self.main.display, self.main.height, self.dt)
 
             if enemy.y >= self.main.height:
                 self.player.lives -= 1
-                self.enemies.remove(enemy)
+                self.enemies.pop(i)
 
-            for bullet in self.player.bullet_list:  # player shots
+            # player shots
+            for z, bullet in sorted(enumerate(self.player.bullet_list), reverse=True):
                 if bullet.bullet_rect.colliderect(enemy.enemyrect):
-                    self.enemies.remove(enemy)
-                    self.player.bullet_list.remove(bullet)
+                    self.enemies.pop(i)
+                    self.player.bullet_list.pop(z)
                     self.player.score += 1
 
-            for bullet in enemy.bullet_list:    # enemy shots
+            # enemy shots
+            for z, bullet in sorted(enumerate(enemy.bullet_list), reverse=True):
                 if bullet.bullet_rect.colliderect(self.player.player_rect):
-                    enemy.bullet_list.remove(bullet)
+                    enemy.bullet_list.pop(z)
                     self.player.lives -= 1
 
     def update(self) -> None:

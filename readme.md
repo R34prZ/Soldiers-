@@ -13,6 +13,7 @@
 - [x] Enemies (partially done, as i want to implement new ones);
 - [x] OOP to make things easier;
 - [x] Menus (also partially, as i need to add functionalities to some of them);
+- [x] Delta time;
 - [ ] Music and sound effects;
 - [ ] New (and better) sprites;
 - [ ] Particles? Maybe;

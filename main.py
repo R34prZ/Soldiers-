@@ -17,7 +17,7 @@ pygame.init()
 class Main:
 
     NAME = 'Allied vs Axis'
-    VERSION = '0.5.6'
+    VERSION = '0.5.7'
 
     def __init__(self, width, height):
 
@@ -112,8 +112,8 @@ class Main:
             self.reset_keys()
 
             self.screen.blit(self.display, (0, 0))
-            self.clock.tick(self.FPS)
             pygame.display.flip()
+            self.clock.tick(self.FPS)
 
 
 if __name__ == '__main__':
