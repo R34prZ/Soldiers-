@@ -29,10 +29,12 @@ class Game:
         # images
         self.background = pygame.image.load(
             './img/background.png').convert()
-        self.weapon_frame = pygame.image.load(
-            './img/weaponframe_assaultrifle.png').convert()
+        # self.weapon_frame = pygame.image.load(
+        #     './img/weaponframe_assaultrifle.png').convert()
+        # self.weapon_frame.set_colorkey(BLACK)
         self.bullet_frame = pygame.image.load(
             './img/bulletframe.png').convert()
+        self.bullet_frame.set_colorkey(BLACK)
 
         # delta time
         self.dt = 0
@@ -67,7 +69,7 @@ class Game:
     def draw(self) -> None:
         '''Render to the screen.'''
         self.main.display.blit(self.background, (0, 0))
-        self.main.display.blit(self.weapon_frame, (10, self.main.height - 64))
+        #self.main.display.blit(self.weapon_frame, (10, self.main.height - 64))
         self.main.display.blit(pygame.transform.scale(self.bullet_frame, (56, 56)),
                                (self.main.width - 45, self.main.height - 60))
 
