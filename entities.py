@@ -1,12 +1,16 @@
 # Things related to game entities
 
-import pygame
 from random import randint
-from utilities import animate, WHITE, BLACK
+
+import pygame
+from utilities import BLACK
+from utilities import WHITE
+from utilities import animate
 
 
 class Shoot:
-    def __init__(self, playerx, playery, playerlen: tuple, width, height, speed):
+    def __init__(self, playerx: int, playery: int, playerlen: tuple,
+                 width: int, height: int, speed: int) -> None:
 
         # basic information
         self.width = width
@@ -16,8 +20,7 @@ class Shoot:
         self.bullet_rect = pygame.Rect(
             playerx - (self.width - playerlen[0] // 2) - 4, playery, self.width, self.height)
 
-    def update(self, up=True, down=False):
-
+    def update(self, up: bool = True, down: bool = False) -> None:
         if up:
             self.bullet_rect.y -= self.bullet_speed
         elif down:
@@ -25,8 +28,7 @@ class Shoot:
 
 
 class Player:
-    def __init__(self, x, y, length: tuple):
-
+    def __init__(self, x: int, y: int, length: tuple) -> None:
         # position and basic stuff
         self.x = x
         self.y = y
@@ -67,16 +69,14 @@ class Player:
 
         self.state = 'idle'
 
-    def move(self, dt):
-
+    def move(self, dt: float) -> None:
         self.keyboard = pygame.key.get_pressed()
         if self.keyboard[pygame.K_a] or self.keyboard[pygame.K_LEFT]:
             self.movements['left'] = True
         if self.keyboard[pygame.K_d] or self.keyboard[pygame.K_RIGHT]:
             self.movements['right'] = True
-        if self.keyboard[pygame.K_SPACE]:
-            if self.ammo > 0:
-                self.movements['shooting'] = True
+        if self.keyboard[pygame.K_SPACE] and self.ammo > 0:
+            self.movements['shooting'] = True
 
         if self.movements['left']:
             self.x -= self.player_vel * dt
@@ -91,19 +91,18 @@ class Player:
         else:
             self.state = 'idle'
 
-    def reset_keys(self):
+    def reset_keys(self) -> None:
         self.movements = {
             'left': False,
             'right': False,
             'shooting': False
         }
 
-    def create_bullet(self):
+    def create_bullet(self) -> Shoot:
         self.ammo -= 1
         return Shoot(self.x + 8, self.y, self.length, 6, 15, 25)
 
-    def update(self, display, width, dt):
-
+    def update(self, display: pygame.Surface, width: int, dt: float):
         # player movement
         self.move(dt)
 
@@ -143,9 +142,7 @@ class Player:
         display.blit(lifebar_bg, lifebar)
         pygame.draw.rect(display, WHITE, lifebar)
 
-        if self.lives <= 0:
-            self.lives = 0
-
+        self.lives = max(self.lives, 0)
         # animation related
         if self.frame >= len(self.animations[self.state]):
             self.frame = 0
@@ -160,7 +157,7 @@ class Player:
 
 
 class Enemy:
-    def __init__(self, x, y):
+    def __init__(self, x: int, y: int) -> None:
 
         # position and basic stuff
         self.x = x
@@ -184,7 +181,7 @@ class Enemy:
         self.state = 'move'
         self.frame = 0
 
-    def spawn_enemy(quantity, screen_width) -> list:
+    def spawn_enemy(quantity: int, screen_width: int) -> list:
 
         enemy_list = []
 
@@ -197,14 +194,14 @@ class Enemy:
 
         return enemy_list
 
-    def create_bullet(self):
+    def create_bullet(self) -> Shoot:
         return Shoot(self.x, self.y + self.len[1], self.len, 5, 15, 25)
 
-    def move(self, dt):
+    def move(self, dt: float) -> None:
         self.y += self.vel * dt
         self.frame += 0.1
 
-    def update(self, display, height, dt):
+    def update(self, display: pygame.Surface, height: int, dt: float) -> None:
 
         # enemy movement
         self.move(dt)
@@ -236,20 +233,20 @@ class Enemy:
 
 
 class Packs:
-    def spawn_packs(Type, amount, displaywidth, displayheight):
+    def spawn_packs(pack_type: object, amount: int, displaywidth: int, displayheight: int):
         pack_list = []
 
         for _ in range(amount):
             x = randint(20, displaywidth - 64)
             y = randint(20, displayheight - 200)
 
-            pack_list.append(Type(x, y, 64, 64))
+            pack_list.append(pack_type(x, y, 64, 64))
 
         return pack_list
 
 
 class Medipack:
-    def __init__(self, x, y, width, height):
+    def __init__(self, x: int, y: int, width: int, height: int) -> None:
 
         self.x = x
         self.y = y
@@ -273,7 +270,7 @@ class Medipack:
         self.animations['entrance'] = animate(
             './img/animations/packs/entrance_anim/', 'entrance', 16)
 
-    def update(self, display):
+    def update(self, display: pygame.Surface) -> None:
 
         self.frames += 0.1
 
@@ -288,7 +285,7 @@ class Medipack:
 
 
 class Ammobag:
-    def __init__(self, x, y, width, height):
+    def __init__(self, x: int, y: int, width: int, height: int) -> None:
 
         self.x = x
         self.y = y
@@ -312,7 +309,7 @@ class Ammobag:
         self.animations['entrance'] = animate(
             './img/animations/packs/entrance_anim/', 'entrance', 16)
 
-    def update(self, display):
+    def update(self, display: pygame.Surface) -> None:
 
         self.frames += 0.1
 

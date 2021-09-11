@@ -1,12 +1,13 @@
-import pygame
-import entities
 from time import time
+
+import entities
+import pygame
 from utilities import *
 
 
 class Game:
 
-    def __init__(self, main):
+    def __init__(self, main: object) -> None:
 
         self.main = main
 
@@ -26,16 +27,18 @@ class Game:
             entities.Ammobag, 1, self.main.width, self.main.height)
 
         # images
-        self.background = pygame.image.load('./img/background.png')
+        self.background = pygame.image.load(
+            './img/background.png').convert()
         self.weapon_frame = pygame.image.load(
-            './img/weaponframe_assaultrifle.png')
-        self.bullet_frame = pygame.image.load('./img/bulletframe.png')
+            './img/weaponframe_assaultrifle.png').convert()
+        self.bullet_frame = pygame.image.load(
+            './img/bulletframe.png').convert()
 
         # delta time
         self.dt = 0
         self.first_time = time()
 
-    def handle_events(self):
+    def handle_events(self) -> None:
         '''Handle game events.'''
 
         if len(self.enemies) <= 0:
@@ -50,15 +53,18 @@ class Game:
             self.ammobags = entities.Packs.spawn_packs(
                 entities.Ammobag, 1, self.main.width, self.main.height)
 
-        if self.player.score % 10 == 0 and self.player.score > 0:
-            if self.enemy_quantity < 20:
-                self.enemy_quantity += 1
+        if (
+            self.player.score % 10 == 0
+            and self.player.score > 0
+            and self.enemy_quantity < 20
+        ):
+            self.enemy_quantity += 1
 
         if self.player.lives == 0:
             self.main.on_gameover = True
             self.main.playing = False
 
-    def draw(self):
+    def draw(self) -> None:
         '''Render to the screen.'''
         self.main.display.blit(self.background, (0, 0))
         self.main.display.blit(self.weapon_frame, (10, self.main.height - 64))
@@ -80,7 +86,7 @@ class Game:
         blit_text(self.main.display, str(self.player.ammo), self.main.width -
                   75, self.main.height - 35, color=(0, 0, 0))
 
-    def update_game(self):
+    def update_game(self) -> None:
         '''updates the game state.'''
 
         self.second_time = time()

@@ -3,7 +3,7 @@ import utilities
 
 
 class Menu:
-    def __init__(self, main):
+    def __init__(self, main: object) -> None:
         self.main = main
 
         self.midscreenX, self.midscreenY = self.main.width // 2, self.main.height // 2
@@ -11,13 +11,13 @@ class Menu:
         self.cursor_rect = pygame.Rect(0, 0, 20, 20)
         self.offset = -100
 
-    def draw_cursor(self):
+    def draw_cursor(self) -> None:
         utilities.blit_text(self.main.display, '*',
                             self.cursor_rect.x, self.cursor_rect.y)
 
 
 class MainMenu(Menu):
-    def __init__(self, main):
+    def __init__(self, main: object) -> None:
         super().__init__(main)
 
         self.state = 'Start'
@@ -29,7 +29,7 @@ class MainMenu(Menu):
 
         self.cursor_rect.center = (self.startx + self.offset, self.starty)
 
-    def render_buttons(self):
+    def render_buttons(self) -> None:
         utilities.text_button(self.main.display, 'Start Game',
                               self.startx, self.starty)
 
@@ -42,7 +42,7 @@ class MainMenu(Menu):
         utilities.text_button(self.main.display, 'Exit',
                               self.exitx, self.exity)
 
-    def move_cursor(self):
+    def move_cursor(self) -> None:
         if self.main.keys['down_key']:
             if self.state == 'Start':
                 self.cursor_rect.center = (
@@ -92,14 +92,14 @@ class MainMenu(Menu):
             elif self.state == 'Exit':
                 self.main.game_running = False
 
-    def update(self):
+    def update(self) -> None:
         self.render_buttons()
         self.draw_cursor()
         self.move_cursor()
 
 
 class OptionsMenu(Menu):
-    def __init__(self, main):
+    def __init__(self, main: object) -> None:
         super().__init__(main)
 
         self.state = 'Back'
@@ -108,15 +108,15 @@ class OptionsMenu(Menu):
 
         self.cursor_rect.center = (self.backx + self.offset, self.backy)
 
-    def render_buttons(self):
+    def render_buttons(self) -> None:
         utilities.text_button(self.main.display, 'Back',
                               self.backx, self.backy)
 
-    def draw_menu(self):
+    def draw_menu(self) -> None:
         utilities.blit_text(self.main.display, 'Yet to be implemented!',
                             0, 0, self.main.width, self.main.height, center_x=1, center_y=1)
 
-    def move_cursor(self):
+    def move_cursor(self) -> None:
         if self.main.keys['down_key']:
             if self.state == 'Back':
                 pass
@@ -128,7 +128,7 @@ class OptionsMenu(Menu):
                 self.main.on_menu = True
                 self.main.on_optionsmenu = False
 
-    def update(self):
+    def update(self) -> None:
         self.render_buttons()
         self.draw_menu()
         self.draw_cursor()
@@ -136,7 +136,7 @@ class OptionsMenu(Menu):
 
 
 class ControlsMenu(Menu):
-    def __init__(self, main):
+    def __init__(self, main: object) -> None:
         super().__init__(main)
 
         self.state = 'Back'
@@ -161,11 +161,11 @@ class ControlsMenu(Menu):
         self.spacebar_key_frame.set_colorkey(utilities.BLACK)
         self.spacebar_key_frame_rect = self.spacebar_key_frame.get_rect()
 
-    def render_buttons(self):
+    def render_buttons(self) -> None:
         utilities.text_button(self.main.display, 'Back',
                               self.backx, self.backy)
 
-    def draw_menu(self):
+    def draw_menu(self) -> None:
         self.main.display.blit(self.main_keys_frame,
                                ((self.midscreenX - self.main_keys_frame_rect.width // 2) - 32, self.midscreenY - 40))
 
@@ -178,7 +178,7 @@ class ControlsMenu(Menu):
         utilities.blit_text(self.main.display, 'Move and Shoot:', 0,
                             self.midscreenY - 65, self.main.width, center_x=1)
 
-    def move_cursor(self):
+    def move_cursor(self) -> None:
         if self.main.keys['down_key']:
             if self.state == 'Back':
                 pass
@@ -190,7 +190,7 @@ class ControlsMenu(Menu):
                 self.main.on_menu = True
                 self.main.on_controlsmenu = False
 
-    def update(self):
+    def update(self) -> None:
         self.render_buttons()
         self.draw_menu()
         self.draw_cursor()
@@ -198,7 +198,7 @@ class ControlsMenu(Menu):
 
 
 class GameOverMenu(Menu):
-    def __init__(self, main):
+    def __init__(self, main: object) -> None:
         super().__init__(main)
 
         self.state = 'Restart'
@@ -221,7 +221,7 @@ class GameOverMenu(Menu):
         utilities.text_button(self.main.display, 'Main Menu',
                               self.mainmenux, self.mainmenuy)
 
-    def draw_menu(self):
+    def draw_menu(self) -> None:
         self.main.display.blit(self.dead_soldier_sprite, (self.midscreenX -
                                                           self.dead_soldier_sprite_rect.width // 2, self.midscreenY - 180))
 
@@ -234,7 +234,7 @@ class GameOverMenu(Menu):
         utilities.blit_text(self.main.display,
                             f'SCORE: {self.main.main_game.player.score}', 0, self.midscreenY + 100, self.main.width, center_x=1, font_size=18)
 
-    def move_cursor(self):
+    def move_cursor(self) -> None:
         if self.main.keys['down_key']:
             if self.state == 'Restart':
                 self.cursor_rect.center = (
@@ -263,7 +263,7 @@ class GameOverMenu(Menu):
                 self.main.on_menu = True
                 self.main.restart_game()
 
-    def update(self):
+    def update(self) -> None:
 
         self.render_buttons()
         self.draw_menu()
