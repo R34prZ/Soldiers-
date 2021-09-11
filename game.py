@@ -17,14 +17,14 @@ class Game:
         self.player = entities.Player(self.main.width // 2 - 32,
                                       self.main.height - 130, (64, 64))
 
-        self.enemies = entities.Enemy.spawn_enemy(
+        self.enemies = entities.Enemy.spawn(
             self.enemy_quantity, self.main.width)
 
-        self.medipacks = entities.Packs.spawn_packs(
-            entities.Medipack, 2, self.main.width, self.main.height)
+        self.medipacks = entities.Medipack.spawn(
+            2, self.main.width, self.main.height)
 
-        self.ammobags = entities.Packs.spawn_packs(
-            entities.Ammobag, 1, self.main.width, self.main.height)
+        self.ammobags = entities.Ammobag.spawn(
+            1, self.main.width, self.main.height)
 
         # images
         self.background = pygame.image.load(
@@ -42,16 +42,16 @@ class Game:
         '''Handle game events.'''
 
         if len(self.enemies) <= 0:
-            self.enemies = entities.Enemy.spawn_enemy(
+            self.enemies = entities.Enemy.spawn(
                 self.enemy_quantity, self.main.width)
 
         if self.player.score % 200 == 0 and len(self.medipacks) == 0:
-            self.medipacks = entities.Packs.spawn_packs(
-                entities.Medipack, 2, self.main.width, self.main.height)
+            self.medipacks = entities.Medipack.spawn(
+                2, self.main.width, self.main.height)
 
         if self.player.score % 50 == 0 and len(self.ammobags) == 0:
-            self.ammobags = entities.Packs.spawn_packs(
-                entities.Ammobag, 1, self.main.width, self.main.height)
+            self.ammobags = entities.Ammobag.spawn(
+                1, self.main.width, self.main.height)
 
         if (
             self.player.score % 10 == 0

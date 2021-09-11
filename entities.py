@@ -181,18 +181,19 @@ class Enemy:
         self.state = 'move'
         self.frame = 0
 
-    def spawn_enemy(quantity: int, screen_width: int) -> list:
+    @classmethod
+    def spawn(cls, quantity: int, screen_width: int) -> list:
 
-        enemy_list = []
+        enemy_list = {}
 
         for _ in range(quantity):
             xpos = randint(10, screen_width - 64)
             ypos = randint(-50, 10)
+            key = (xpos, ypos)
+            if key not in enemy_list:
+                enemy_list[key] = (cls(*key))
 
-            if Enemy(xpos, ypos) not in enemy_list:
-                enemy_list.append(Enemy(xpos, ypos))
-
-        return enemy_list
+        return list(enemy_list.values())
 
     def create_bullet(self) -> Shoot:
         return Shoot(self.x, self.y + self.len[1], self.len, 5, 15, 25)
@@ -232,20 +233,21 @@ class Enemy:
             actual_animation, (64, 64)), False, True), self.enemyrect)
 
 
-class Packs:
-    def spawn_packs(pack_type: object, amount: int, displaywidth: int, displayheight: int):
+class Pack:
+    @classmethod
+    def spawn(cls, amount: int, displaywidth: int, displayheight: int):
         pack_list = []
 
         for _ in range(amount):
             x = randint(20, displaywidth - 64)
             y = randint(20, displayheight - 200)
 
-            pack_list.append(pack_type(x, y, 64, 64))
+            pack_list.append(cls(x, y, 64, 64))
 
         return pack_list
 
 
-class Medipack:
+class Medipack(Pack):
     def __init__(self, x: int, y: int, width: int, height: int) -> None:
 
         self.x = x
@@ -284,7 +286,7 @@ class Medipack:
             actual_animation, (64, 64)), (self.x, self.y))
 
 
-class Ammobag:
+class Ammobag(Pack):
     def __init__(self, x: int, y: int, width: int, height: int) -> None:
 
         self.x = x
