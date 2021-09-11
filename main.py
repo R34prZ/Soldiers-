@@ -1,10 +1,11 @@
-import pygame
 import sys
+
 import menu
+import pygame
+from game import Game
 #import game
 from pygame.locals import *
 from utilities import *
-from game import Game
 
 # Game made by R34prZ#6633
 # https://github.com/R34prZ
@@ -19,7 +20,7 @@ class Main:
     NAME = 'Allied vs Axis'
     VERSION = '0.5.7'
 
-    def __init__(self, width, height):
+    def __init__(self, width: int, height: int) -> None:
 
         # screen information
         self.width = width
@@ -59,7 +60,7 @@ class Main:
         self.playing = False
         self.on_gameover = False
 
-    def check_event(self):
+    def check_event(self) -> None:
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -71,10 +72,10 @@ class Main:
                     self.keys['down_key'] = True
                 elif event.key == K_RETURN:
                     self.keys['enter_key'] = True
-                elif event.key == K_BACKSPACE or event.key == K_ESCAPE:
+                elif event.key in [K_BACKSPACE, K_ESCAPE]:
                     self.keys['return_key'] == True
 
-    def reset_keys(self):
+    def reset_keys(self) -> None:
         self.keys = {
             'up_key': False,
             'down_key': False,
@@ -82,11 +83,11 @@ class Main:
             'return_key': False
         }
 
-    def restart_game(self):
+    def restart_game(self) -> None:
         ''' Restarts the main game state to be able to run it again after dying. '''
         self.main_game = Game(self)
 
-    def update(self):
+    def update(self) -> None:
 
         while self.game_running:
 

@@ -1,7 +1,8 @@
 # Utilities module, supposed to contain functions, variables, and other things that can come handy
+import json
+from os.path import join as path_join
 
 import pygame
-import json
 
 # Colors
 WHITE = (255, 255, 255)
@@ -16,7 +17,11 @@ GRAY = (128, 128, 128)
 PURPLE = (128, 0, 128)
 
 
-def blit_text(surface, text, x, y, displaywidth=None, displayheight=None, font='./font/Early GameBoy.ttf', font_size=16, color=(255, 255, 255), center_x=False, center_y=False) -> None:
+def blit_text(surface: pygame.Surface, text: str, x: int, y: int,
+              displaywidth: int = None, displayheight: int = None,
+              font: str = './font/Early GameBoy.ttf', font_size: int = 16,
+              color: tuple = (255, 255, 255),
+              center_x: bool = False, center_y: bool = False) -> None:
     """ Automatically blit text on the screen. """
 
     screen_font = pygame.font.Font(font, font_size)
@@ -30,7 +35,9 @@ def blit_text(surface, text, x, y, displaywidth=None, displayheight=None, font='
     surface.blit(text_surface, (x, y))
 
 
-def text_button(surface, text, x, y, font='./font/Early GameBoy.ttf', font_size=16, color=(255, 255, 255)):
+def text_button(surface: pygame.Surface, text: str, x: int, y: int,
+                font: str = './font/Early GameBoy.ttf', font_size: int = 16,
+                color: tuple = (255, 255, 255)) -> None:
     """ Blits a text button to the screen """
 
     button_font = pygame.font.Font(font, font_size)
@@ -40,30 +47,27 @@ def text_button(surface, text, x, y, font='./font/Early GameBoy.ttf', font_size=
     surface.blit(text_surface, button_rect)
 
 
-def animate(path, name, frames):
+def animate(path: str, name: str, frames: int):
     '''Loads sprites for animation. Must be stores on a Animation Dictionary to be loaded based on state.'''
 
     animation_database = []
 
-    n = 1
-    for i in range(frames):
-        image_id = name + str(n)
-        image_path = path + image_id + '.png'
+    for n in range(frames):
+        image_name = f'{name}{n+1}.png'
+        image_path = path_join(path, image_name)
         image = pygame.image.load(image_path).convert_alpha()
         image.set_colorkey((255, 255, 255))
         animation_database.append(image)
 
-        n += 1
-
     return animation_database
 
 
-def save_game(save_file, data):
+def save_game(save_file: str, data: dict) -> None:
     with open(save_file, 'w') as save:
-        json.dump(data, save)
+        json.dump(data, save, indent=4, sort_keys=True)
 
 
-def load_game(save_file):
+def load_game(save_file: str) -> dict:
     with open(save_file, 'r') as save:
         data = json.load(save)
 
